@@ -1,0 +1,14 @@
+{
+  "name": "biblioteca",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node BIBLIOTECA/servidor.js"
+  },
+  "dependencies": {
+    "express": "5.1.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
