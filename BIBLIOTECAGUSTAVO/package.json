@@ -1,24 +1,23 @@
 {
-
   "name": "biblioteca",
   "version": "1.0.0",
   "private": true,
-  
   "scripts": {
-
-      "db:up": "docker start BIBLIOTECAGUSTAVO || docker run -d --name BIBLIOTECAGUSTAVO -p 127.0.0.1:27017:27017 -v BIBLIOTECAGUSTAVO-data:/data/db mongo:8",
-    "db:down": "docker stop BIBLIOTECAGUSTAVO",
-    "db:logs": "docker logs -f BIBLIOTECAGUSTAVO",
-    "db:reset": "docker rm -f BIBLIOTECAGUSTAVO; docker volume rm BIBLIOTECAGUSTAVO-data",
+    "db:up": "docker compose up --wait --wait-timeout 60 mongodb",
+    "db:down": "docker compose stop mongodb",
+    "db:logs": "docker compose logs -f mongodb",
+    "db:reset": "docker compose down --volumes",
     "predev": "npm run db:up",
     "dev": "node --watch src/server.js",
+    "prestart": "npm run db:up",
     "start": "node src/server.js"
-    
   },
   "dependencies": {
-    "express": "5.1.0"
+    "express": "5.1.0",
+    "dotenv": "^18.0.10",
+    "mongodb": "^7.8.0"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20.19.0"
   }
 }

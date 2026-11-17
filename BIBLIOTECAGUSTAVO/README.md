@@ -4,39 +4,31 @@ API REST de biblioteca desenvolvida com Node.js e Express. Permite cadastrar, co
 
 ## Identificação
 
-- Repositório: https://github.com/setembroo895-hub/BIBLIOTECAGUSTAVO
+- Repositório: https://github.com/setembroo895-hub/BIBLIOTECAGUSTAVO-CORRIGIDO
 - Projeto individual (1 integrante).
 - Uma regra de negócio exigida; cinco regras de empréstimo implementadas, descritas abaixo.
 
 ## Requisitos e execução
 
-Instale Node.js 18 ou superior e npm. Execute os comandos na raiz do repositório:
+Use Node.js 20.19 ou superior, npm e Docker com o Compose v2. Com o Docker em execução, abra o terminal na subpasta `BIBLIOTECAGUSTAVO` do repositório:
 
 ```bash
-git clone https://github.com/setembroo895-hub/BIBLIOTECAGUSTAVO.git
 cd BIBLIOTECAGUSTAVO
-npm install
-npm start
+npm ci
+npm run dev
 ```
 
-A API ficará disponível em `http://localhost:3000`. Encerre com `Ctrl+C`. A porta 3000 deve estar livre.
+A API fica disponível em `http://localhost:3000`. Os comandos `npm run dev` e `npm start` iniciam o MongoDB e aguardam o banco ficar disponível. Para alterar a porta ou a configuração do banco, copie `.env.example` para `.env` e edite os valores.
+
+Encerre a API com `Ctrl+C` e pare o banco com `npm run db:down`. Execute `npm run db:logs` para acompanhar os logs. O comando `npm run db:reset` apaga o volume de dados. Se existir um contêiner antigo chamado `BIBLIOTECAGUSTAVO`, pare-o antes de iniciar o Compose para liberar a porta 27017. O Compose usa o mesmo nome de volume do script antigo.
 
 ## Organização
 
-```text
-BIBLIOTECAGUSTAVO/
-├── README.md
-├── package.json
-├── .gitignore
-└── BIBLIOTECA/
-    └── servidor.js
-```
-
-O manifesto fica na raiz; o código do servidor permanece em `BIBLIOTECA/`.
+O servidor inicia em `src/server.js`. Uma requisição passa por `src/routes`, `src/controllers`, `src/services` e `src/models`. A configuração da conexão fica em `src/config/mongodb.js`.
 
 ## Dados e persistência
 
-Os dados são armazenados em arrays na memória, sem banco de dados. A aplicação inicia vazia e todos os registros são perdidos ao reiniciar o servidor. Os IDs numéricos são gerados automaticamente.
+Os dados ficam no MongoDB e são preservados entre reinícios. Os IDs numéricos são gerados por contadores persistentes, um por entidade. Execute uma instância da API por banco para que a criação de empréstimos e a exclusão de cadastros compartilhem a mesma fila de operações.
 
 | Entidade | Campos |
 | --- | --- |
@@ -84,7 +76,7 @@ Criações retornam `201`, consultas e demais operações bem-sucedidas retornam
 
 ## Exemplo de uso
 
-Exemplos para terminal Bash, com o servidor em execução. Em uma execução vazia, os primeiros IDs são 1.
+Exemplos para terminal Bash, com o servidor em execução. Em um banco vazio, os primeiros IDs são 1.
 
 ```bash
 curl -X POST http://localhost:3000/livros -H 'Content-Type: application/json' -d '{"titulo":"Dom Casmurro","autor":"Machado de Assis"}'
